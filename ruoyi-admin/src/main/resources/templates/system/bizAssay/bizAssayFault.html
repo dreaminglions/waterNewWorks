@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('化验故障列表')" />
+</head>
+<body class="gray-bg" id="aaa">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<input name="assayNo" type="hidden" id="assayNo"  th:value="${assayNo}"/>
+
+							<!--<li>-->
+								<!--<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>-->
+								<!--<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>-->
+							<!--</li>-->
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm" id="toolbar" role="group">
+
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+
+	 <!--<script language="javascript" th:src="@{/water/view02/jqprint/jquery-1.4.4.min.js}"></script>-->
+	 <script language="javascript" th:src="@{/water/view02/jqprint/jquery.jqprint-0.3.js}"></script>
+	 <script src="http://www.jq22.com/jquery/jquery-migrate-1.2.1.min.js";></script>
+
+    <script th:inline="javascript">
+
+        var editFlag = [[${@permission.hasPermi('system:bizAssay:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('system:bizAssay:remove')}]];
+        var prefix = ctx + "system/bizAssay";
+
+        $(function() {
+            var options = {
+                url: prefix + "/listFault",
+                detailUrl: prefix + "/checkFault/{id}",
+                updateUrl: prefix + "/editFault/{id}",
+                removeUrl: prefix + "/removeFault",
+				exportUrl: prefix + "/exportFault",
+                queryParams: queryParams,
+                modalName: "化验故障",
+		        showExport: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'faultId',
+					title : '化验故障ID',
+					visible: false
+				},
+				{
+					field : 'assayNo',
+					title : '化验唯一编号',
+					sortable: true
+				},
+				{
+					field : 'device.deviceName',
+					title : '故障设备',
+					sortable: true,
+                    formatter: function(value, item, index) {
+                        var devicename="";
+                        if(item.device!=null){
+                            devicename = item.device.deviceName
+                        }
+                        return '<span class="label label-success">'+devicename+'</span>';
+                    }
+				},
+				{
+					field : 'faultCode',
+					title : '故障代码',
+					sortable: true
+				},
+				{
+					field : 'faultInfo.faultInfo',
+					title : '故障信息',
+					sortable: true,
+                    formatter: function(value, item, index) {
+                        var faultInfo="";
+                        if(item.faultInfo!=null){
+                            faultInfo = item.faultInfo.faultInfo
+                        }
+                        return '<span class="label label-danger">'+faultInfo+'</span>';
+                    }
+				},
+				{
+					field : 'testTubeInfo',
+					title : '故障试管',
+					sortable: true
+				},
+				{
+					field : 'faultInfo.faultSolution',
+					title : '故障解决办法',
+					sortable: true,
+					formatter: function(value, item, index) {
+						var faultSolution="";
+						if(item.faultInfo!=null){
+                            faultSolution = item.faultInfo.faultSolution
+						}
+						return '<span class="label label-success">'+faultSolution+'</span>';
+					}
+				},
+				{
+					field : 'assayBigprocess',
+					title : '故障大流程',
+					sortable: true
+				},
+				{
+					field : 'assaySmallprocess',
+					title : '故障小流程',
+					sortable: true
+				},
+				{
+					field : 'faultTime',
+					title : '故障时间',
+					sortable: true
+				},
+				{
+					field : 'faultStatus',
+					title : '故障状态',
+					sortable: true,
+                    formatter: function(value, item, index) {
+                        if(item.faultStatus==0){
+                            return '<span class="label label-success">已解决</span>';
+                        }else{
+                            return '<span class="label label-danger">未解决</span>';
+						}
+                    }
+				}
+//				,
+//		        {
+//		            title: '操作',
+//		            align: 'center',
+//		            formatter: function(value, row, index) {
+//		            	var actions = [];
+//						return actions.join('');
+//		            }
+//		        }
+		        ]
+            };
+            $.table.init(options);
+        });
+        function queryParams(params) {
+            var search = $.table.queryParams(params);
+            search.assayNo = $("#assayNo").val();
+            return search;
+        }
+
+    </script>
+
+</body>
+</html>
