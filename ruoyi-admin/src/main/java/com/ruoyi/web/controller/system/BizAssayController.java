@@ -25,6 +25,7 @@ import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.*;
@@ -66,8 +67,11 @@ public class BizAssayController extends BaseController
 	
 	@RequiresPermissions("system:bizAssay:view")
 	@GetMapping()
-	public String bizAssay()
+	public String bizAssay(Model model)
 	{
+		BizWaterWork waterWork = ShiroUtils.getSysUser().getWaterWork();
+		Long userWorkId = waterWork.getWorksId();
+		model.addAttribute("userWorkId", userWorkId);
 	    return prefix + "/bizAssay";
 	}
 	
@@ -480,7 +484,6 @@ public class BizAssayController extends BaseController
 	@GetMapping("/detail/{assayNo}")
 	public String detail(@PathVariable("assayNo") String assayNo, ModelMap mmap)
 	{
-
 		BizAssay assay = bizAssayService.selectBizAssayByAssayNo(assayNo);
 		if(assay!=null){
 			mmap.put("assayDate",assay.getAssayDate());

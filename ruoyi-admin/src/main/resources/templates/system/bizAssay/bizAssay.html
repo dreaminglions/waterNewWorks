@@ -126,13 +126,26 @@
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
-                        actions.push('<a class="btn btn-primary btn-xs ' + listFlag + '" href="#" onclick="detail(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>查看</a> ');
+
+		            	if([[${userWorkId}]] == '220' || [[${userWorkId}]] == '212') {
+                            actions.push('<a class="btn btn-primary btn-xs ' + listFlag + '" href="#" onclick="detail(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>查看</a> ');
+                            actions.push('<a class="btn btn-warning btn-xs ' + listFlag + '" href="#" onclick="assayNewDetails(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>新模板化验报告</a> ');
+                            actions.push('<a class="btn btn-warning btn-xs ' + listFlag + '" href="#" onclick="assayOldDetails(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>旧模板化验报告</a> ');
+                            actions.push('<a class="btn btn-danger btn-xs ' + listFlag + '" href="#" onclick="getFault(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>化验故障</a> ');
+                            actions.push('<a class="btn btn-primary btn-xs ' + listFlag + '" href="#" onclick="resultAdd(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>添加化验结果</a> ');
+		            	} else if ([[${userWorkId}]] == '236' || [[${userWorkId}]] == '247') {
+                            actions.push('<a class="btn btn-primary btn-xs ' + listFlag + '" href="#" onclick="detail(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>查看</a> ');
+                            actions.push('<a class="btn btn-warning btn-xs ' + listFlag + '" href="#" onclick="assayKrDetails(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>科瑞模板化验报告</a> ');
+                            actions.push('<a class="btn btn-danger btn-xs ' + listFlag + '" href="#" onclick="getFault(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>化验故障</a> ');
+                            actions.push('<a class="btn btn-primary btn-xs ' + listFlag + '" href="#" onclick="resultAdd(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>添加化验结果</a> ');
+		            	}
+//                        actions.push('<a class="btn btn-primary btn-xs ' + listFlag + '" href="#" onclick="detail(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>查看</a> ');
 //                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="setSample(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>设置样品</a> ');
-                        actions.push('<a class="btn btn-warning btn-xs ' + listFlag + '" href="#" onclick="assayNewDetails(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>LJHB新化验报告</a> ');
-                        actions.push('<a class="btn btn-warning btn-xs ' + listFlag + '" href="#" onclick="assayOldDetails(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>LJHB旧化验报告</a> ');
-                        actions.push('<a class="btn btn-warning btn-xs ' + listFlag + '" href="#" onclick="assayKrDetails(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>测试KR化验报告</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + listFlag + '" href="#" onclick="getFault(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>化验故障</a> ');
-                        actions.push('<a class="btn btn-primary btn-xs ' + listFlag + '" href="#" onclick="resultAdd(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>添加化验结果</a> ');
+//                        actions.push('<a class="btn btn-warning btn-xs ' + listFlag + '" href="#" onclick="assayNewDetails(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>新模板化验报告</a> ');
+//                        actions.push('<a class="btn btn-warning btn-xs ' + listFlag + '" href="#" onclick="assayOldDetails(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>旧模板化验报告</a> ');
+//                        actions.push('<a class="btn btn-warning btn-xs ' + listFlag + '" href="#" onclick="assayKrDetails(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>科瑞模板化验报告</a> ');
+//                        actions.push('<a class="btn btn-danger btn-xs ' + listFlag + '" href="#" onclick="getFault(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>化验故障</a> ');
+//                        actions.push('<a class="btn btn-primary btn-xs ' + listFlag + '" href="#" onclick="resultAdd(\'' + row.assayNo + '\')"><i class="fa fa-search"></i>添加化验结果</a> ');
 						return actions.join('');
 		            }
 		        }]
@@ -167,23 +180,23 @@
             $.modal.openTab("化验故障信息", url);
 		}
 
-        /*  化验详情参数查询 */
+        /*  新版 化验详情参数查询 */
         function assayNewDetails(assayNo) {
             var url = prefix + '/detail/' + assayNo;
 //            var url = prefix + '/assayDetails/' + assayNo;
-            $.modal.openTab("化验报告", url);
+            $.modal.openTab("新版化验报告", url);
         }
-
+		/*  旧版 化验详情参数查询 */
         function assayOldDetails(assayNo) {
             var url = prefix + '/detailOld/' + assayNo;
 //            var url = prefix + '/assayDetails/' + assayNo;
-            $.modal.openTab("化验报告", url);
+            $.modal.openTab("旧版化验报告", url);
         }
-
+		/*  科瑞 化验详情参数查询 */
         function assayKrDetails(assayNo) {
             var url = prefix + '/detailKr/' + assayNo;
 //            var url = prefix + '/assayDetails/' + assayNo;
-            $.modal.openTab("化验报告", url);
+            $.modal.openTab("科瑞化验报告", url);
         }
 
 
