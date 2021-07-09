@@ -10,6 +10,10 @@ public class AssayTotalData {
     private AssayData assayTable ;
     private String orderno;
     private String assaymethod;
+    private String assayWorkName;
+    private String assayDate;
+    private String assayItemName;
+
 
     private String ug1;
     private String ug2;
@@ -189,5 +193,29 @@ public class AssayTotalData {
 
     public void setR(String r) {
         this.r = r;
+    }
+
+    public String getAssayWorkName() {
+        return assayWorkName;
+    }
+
+    public void setAssayWorkName(String assayWorkName) {
+        this.assayWorkName = assayWorkName;
+    }
+
+    public String getAssayDate() {
+        return assayDate;
+    }
+
+    public void setAssayDate(String assayDate) {
+        this.assayDate = assayDate;
+    }
+
+    public String getAssayItemName() {
+        return assayItemName;
+    }
+
+    public void setAssayItemName(String assayItemName) {
+        this.assayItemName = assayItemName;
     }
 }

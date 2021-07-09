@@ -474,7 +474,7 @@ public class BizAssayController extends BaseController
 
 
 	/**
-	 * 查询化验明细
+	 * 新报表 查询化验明细
 	 */
 	@RequiresPermissions("system:bizAssay:list")
 	@GetMapping("/detail/{assayNo}")
@@ -494,9 +494,117 @@ public class BizAssayController extends BaseController
 
 		mmap.put("itemList", resultList);
 		mmap.put("assayNo", assayNo);
+		/*return prefix + "/BizAssayDetails";*/
+		return prefix + "/BizNewAssayDetails";
+	}
+
+	/**
+	 * 旧 查询化验明细
+	 */
+	@RequiresPermissions("system:bizAssay:list")
+	@GetMapping("/detailOld/{assayNo}")
+	public String detailOld(@PathVariable("assayNo") String assayNo, ModelMap mmap)
+	{
+
+		BizAssay assay = bizAssayService.selectBizAssayByAssayNo(assayNo);
+		if(assay!=null){
+			mmap.put("assayDate",assay.getAssayDate());
+			BizWaterWork work = waterWorkService.selectBizWaterWorkById(assay.getDevice().getDeviceWorks());
+			if(work!=null){
+				mmap.put("worksName",work.getWorksName());
+				mmap.put("Sname", "");
+			}
+		}
+		List<AssayItem> resultList = assayResultService.selectItemByAssayNo(assayNo);
+
+		mmap.put("itemList", resultList);
+		mmap.put("assayNo", assayNo);
 		return prefix + "/BizAssayDetails";
 	}
 
+	/**
+	 * 科瑞 查询化验明细
+	 */
+	@RequiresPermissions("system:bizAssay:list")
+	@GetMapping("/detailKr/{assayNo}")
+	public String detailKr(@PathVariable("assayNo") String assayNo, ModelMap mmap)
+	{
+
+		BizAssay assay = bizAssayService.selectBizAssayByAssayNo(assayNo);
+		if(assay!=null){
+			mmap.put("assayDate",assay.getAssayDate());
+			BizWaterWork work = waterWorkService.selectBizWaterWorkById(assay.getDevice().getDeviceWorks());
+			if(work!=null){
+				mmap.put("worksName",work.getWorksName());
+				mmap.put("Sname", "");
+			}
+		}
+		List<AssayItem> resultList = assayResultService.selectItemByAssayNo(assayNo);
+
+		mmap.put("itemList", resultList);
+		mmap.put("assayNo", assayNo);
+		/*return prefix + "/BizAssayDetails";*/
+		return prefix + "/BizKRNewAssayDetails";
+	}
+
+	/**
+	 * 旧报表获取化验数据
+	 * @param params
+	 * @return
+	 */
+	@PostMapping("/getOldAssayByItem")
+	@ResponseBody
+	public AjaxResult getOldAssayByItem(@RequestBody JSONObject params) {
+
+		String  assayNo = params.getString("assayNo");
+		String  assayItem = params.getString("assayItem");
+
+		AssayResult assay = new AssayResult();
+		assay.setAssayNo(assayNo);
+		assay.setAssayItem(assayItem);
+		List<AssayResult> assayResult = assayResultService.selectAssayResultList(assay);
+//		List<Map<String, Object>> assayResultList = assayResultService.selectAssayResultListNew(assay);
+		AssayCurve curve_item = assayCurveService.selectAssayCurveByCurveNo(assayItem);
+
+		float ck0 = curve_item.getCurveK0();
+		float ck1 = curve_item.getCurveK1();
+		float cr = curve_item.getCurveR();
+
+		String assaymethod= "";
+		String recordName = "";
+		if("1".equals(assayItem)||"2".equals(assayItem)){
+			assaymethod = "HJ399-2007化学需氧量的测定 快速消解分光光度法";
+			recordName = "容量法检测原始记录";
+		}else if("5".equals(assayItem)){
+			assaymethod = "GB11893-1989水质总磷的测定钼酸铵分光光度法";
+			recordName = "分光光度法检测原始记录";
+		}else if("4".equals(assayItem)){
+			assaymethod = "HJ636-2012水质总氮的测定碱性过硫酸钾消解紫外分光光度法";
+			recordName = "分光光度法检测原始记录";
+		}else if("3".equals(assayItem)){
+			assaymethod = "HJ535-2009水质氨氮的测定纳氏试剂分光光度法";
+			recordName = "分光光度法检测原始记录";
+		}
+
+		Gson gson = new Gson();
+		String itemData = gson.toJson(assayResult);
+		String curveData = gson.toJson(curve_item);
+		String methodData = gson.toJson(assaymethod);
+
+		String recordNameData = gson.toJson(recordName);
+		AjaxResult ajax = AjaxResult.success();
+		ajax.put("itemData", itemData);
+		ajax.put("curveData", curveData);
+		ajax.put("methodData", methodData);
+		ajax.put("recordNameData",recordNameData);
+		return ajax;
+	}
+
+	/**
+	 * 新报表 获取化验格式
+	 * @param params
+	 * @return
+	 */
 	@PostMapping("/getAssayByItem")
 	@ResponseBody
 	public AjaxResult getAssayByItem(@RequestBody JSONObject params) {
@@ -507,29 +615,54 @@ public class BizAssayController extends BaseController
 		AssayResult assay = new AssayResult();
 		assay.setAssayNo(assayNo);
 		assay.setAssayItem(assayItem);
-		List<AssayResult> assayResult = assayResultService.selectAssayResultList(assay);
+		/*List<AssayResult> assayResult = assayResultService.selectAssayResultList(assay);*/
+		List<Map<String, Object>> assayResultList = assayResultService.selectAssayResultListNew(assay);
 		AssayCurve curve_item = assayCurveService.selectAssayCurveByCurveNo(assayItem);
 
+		float ck0 = curve_item.getCurveK0();
+		float ck1 = curve_item.getCurveK1();
+		float cr = curve_item.getCurveR();
+		String ck0Str = String.format("%E", ck0);
+		String ck1Str = String.format("%E", ck1);
+		String crStr = String.format("%E", cr);
+
+		String assayItemName = assayResultList.get(0).get("item_name").toString();
+
 		String assaymethod= "";
+		String recordName = "";
 		if("1".equals(assayItem)||"2".equals(assayItem)){
 			assaymethod = "HJ399-2007化学需氧量的测定 快速消解分光光度法";
+			recordName = "容量法检测原始记录";
 		}else if("5".equals(assayItem)){
 			assaymethod = "GB11893-1989水质总磷的测定钼酸铵分光光度法";
+			recordName = "分光光度法检测原始记录";
 		}else if("4".equals(assayItem)){
 			assaymethod = "HJ636-2012水质总氮的测定碱性过硫酸钾消解紫外分光光度法";
+			recordName = "分光光度法检测原始记录";
 		}else if("3".equals(assayItem)){
 			assaymethod = "HJ535-2009水质氨氮的测定纳氏试剂分光光度法";
+			recordName = "分光光度法检测原始记录";
 		}
 
 		Gson gson = new Gson();
-		String itemData = gson.toJson(assayResult);
+		String itemData = gson.toJson(assayResultList);
 		String curveData = gson.toJson(curve_item);
 		String methodData = gson.toJson(assaymethod);
+		String assayItemNameData = gson.toJson(assayItemName);
+		String ck0StrData = gson.toJson(ck0Str);
+		String ck1StrData = gson.toJson(ck1Str);
+		String crStrData = gson.toJson(crStr);
+		String recordNameData = gson.toJson(recordName);
 
 		AjaxResult ajax = AjaxResult.success();
 		ajax.put("itemData", itemData);
 		ajax.put("curveData", curveData);
 		ajax.put("methodData", methodData);
+		ajax.put("assayItemNameData",assayItemNameData);
+		ajax.put("ck0StrData",ck0StrData);
+		ajax.put("ck1StrData",ck1StrData);
+		ajax.put("crStrData",crStrData);
+		ajax.put("recordNameData",recordNameData);
 		return ajax;
 	}
 
@@ -607,9 +740,11 @@ public class BizAssayController extends BaseController
 		data.setR(curve_item.getCurveR()+"");
 
 		String path = ClassUtils.getDefaultClassLoader().getResource("").getPath();
-		String resource = path+"static/docx/报表记录测试2.docx";
+//		String resource = path+"static/docx/报表记录测试2.docx";
+		String resource = path+"static/docx/新报表测试报告模板.docx";
 		Configure config = Configure.newBuilder().customPolicy("detail_table", new AssayTablePolicy()).build();
 		XWPFTemplate template = XWPFTemplate.compile(resource, config).render(data);
+
 
 		OutputStream out = null;
 		try {

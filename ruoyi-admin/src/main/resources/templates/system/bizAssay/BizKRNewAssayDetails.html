@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+  <th:block th:include="include :: header('化验结果列表')" />
+</head>
+<body class="gray-bg">
+
+<div class="container-div">
+  <div class="row">
+    <div class="col-sm-12 search-collapse">
+      <form id="formId">
+        <input id="assayNo" name="assayNo"  type="hidden" th:value="*{assayNo}" />
+        <div class="select-list">
+
+          <li>
+            化验项目：<select id="assayItem" name="assayItem">
+            <option  text="请选择" value="" >请选择</option>
+            <option th:each="item : ${itemList}" th:text="${item.itemName}" th:value="${item.assayItem}" ></option>
+          </select>
+          </li>
+          <ul>
+            <li>
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="searchItem()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+            </li>
+          </ul>
+
+          <li>
+            <a id="Docx_button" class="btn btn-primary" onclick="Docx()" shiro:hasPermission="system:bizAssay:export" style="display:none">
+              <i class="fa fa-download"></i> 导出分析项目原始记录
+            </a>
+
+          </li>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-sm-12 select-table table-striped" id="assayDetails">
+      <div id="cod_div">
+
+        <table id="top-table" data-mobile-responsive="true" style="table-layout: auto" class="table table-hover">
+          <tr align="justify">
+
+            <td style="text-align:center;border: 1px solid #e7eaec" colspan="4">
+
+                <span style="text-decoration:underline;">黑龙江科瑞检测技术有限公司 </span>
+
+            </td>
+          </tr>
+
+          <tr align="justify">
+            <td style="text-align:center;letter-spacing:8px;font-size:18px;font-weight:900;border: 1px solid #e7eaec" colspan="4">
+              <div>
+                <span id="recordName">分 光 光 度 法 分 析 原 始 记 录（一）</span>
+              </div>
+            </td>
+          </tr>
+
+          <tr align="justify">
+            <td style="text-align:right;border: 1px solid #e7eaec" colspan="2">
+              <div>
+                <span>编号：KR-08-10-001 </span>
+              </div>
+            </td>
+            <td style="text-align:right;border: 1px solid #e7eaec" colspan="2">
+              <div>
+                <span>报告编号：[[${assayNo}]]</span>
+              </div>
+            </td>
+          </tr>
+
+
+          <tr align="justify">
+            <td colspan="1" style="border: 1px solid #e7eaec">
+              <div>
+                <label>检测项目：</label>
+                <span id="theIteName"></span>
+              </div>
+            </td>
+            <td colspan="1" style="border: 1px solid #e7eaec">测定日期： [[${assayDate}]]</td>
+          </tr>
+          <tr>
+            <th rowspan="1" style="border: 1px solid #e7eaec; width:25%">
+              方法名称及编号
+            </th>
+            <td rowspan="1" colspan="3" style="border: 1px solid #e7eaec" id="methodname">
+              水质 氨氮的测定 纳氏试剂分光光度法 HJ 535-2009
+            </td>
+
+          </tr>
+          <tr>
+            <th rowspan="1" style="border: 1px solid #e7eaec; width:25%">
+              前处理过程
+            </th>
+            <td rowspan="1" colspan="3" style="border: 1px solid #e7eaec" id="methodname1">
+              取100mL水样于100mL比色管中加入1mL硫酸锌,再加入0.5mL氢氧化钠,絮凝沉淀,弃去前20mL水样。取50mL水样于50mL比色管中加1mL酒石酸钾钠,再加入1.5mL纳氏试剂,盖上盖子摇匀,显色10min后测定。
+            </td>
+
+          </tr>
+          <tr>
+            <th rowspan="1" style="border: 1px solid #e7eaec; width:25%">
+              方法名称及编号
+            </th>
+            <td rowspan="1" colspan="3" style="border: 1px solid #e7eaec" id="methodname2">
+              水质 氨氮的测定 纳氏试剂分光光度法 HJ 535-2009
+            </td>
+
+          </tr>
+          <tr>
+            <th rowspan="1" style="border: 1px solid #e7eaec; width:25%">
+              仪器名称/型号/编号
+            </th>
+            <td rowspan="1" colspan="3" style="border: 1px solid #e7eaec" id="methodname3">
+              þ双光束紫外可见分光光度计/TU-1901/KR-144                                   □ 双光束紫外可见分光光度计/TU-1901/KR-254
+            </td>
+          </tr>
+          <tr>
+            <td rowspan="2" style="border: 1px solid #e7eaec; width:25%">
+              仪器条件
+            </td>
+            <td rowspan="1" style="border: 1px solid #e7eaec; width:25%">
+              测定波长(nm)
+            </td>
+            <td rowspan="1" style="border: 1px solid #e7eaec; width:25%">
+              光程(nm)
+            </td>
+            <td rowspan="1" style="border: 1px solid #e7eaec; width:25%">
+              参比液
+            </td>
+          </tr>
+          <tr>
+            <td rowspan="1" style="border: 1px solid #e7eaec; width:25%">
+              420
+            </td>
+            <td rowspan="1" style="border: 1px solid #e7eaec; width:25%">
+              20
+            </td>
+            <td rowspan="1" style="border: 1px solid #e7eaec; width:25%">
+              无氨水
+            </td>
+          </tr>
+        </table>
+
+        <table id="curve-table" class="table table-hover" th:object="${CODparameter}">
+          <tr style="border: 1px solid #e7eaec">
+            <td rowspan="3" colspan="1" style="border: 1px solid #e7eaec">校准曲线</td>
+            <td rowspan="1"  colspan="5" style="border: 1px solid #e7eaec">1、标准工作液编号：           ； </td>
+          </tr>
+          <tr style="border: 1px solid #e7eaec">
+            <td rowspan="1" colspan="5"   style="border: 1px solid #e7eaec">2、标准曲线配制记录：          ； </td>
+          </tr>
+          <tr style="border: 1px solid #e7eaec">
+            <td rowspan="1"  colspan="5"  style="border: 1px solid #e7eaec">3、曲线绘制时间：                ；</td>
+          </tr>
+          <tr>
+            <th colspan="1">回归方程</th>
+            <th colspan="1">Y=bX+a</th>
+            <th colspan="1">曲线空白</th>
+            <td colspan="1" id="curve_b">b = [[${CODparameter?.curveK0}]]</td>
+            <td colspan="1" id="curve_a">a = [[${CODparameter?.curveK1}]]</td>
+            <td colspan="1" id="curve_r">r = [[${CODparameter?.curveR}]]</td>
+          </tr>
+
+        </table>
+
+        <table id="sample-table" data-mobile-responsive="true" class="table table-hover">
+          <tr  class="cod">
+            <th>序号</th>
+            <th>样品编号</th>
+            <th>þ试样体积V(mL)   □试样质量m(g)</th>
+            <th>
+              þ稀释倍数f   □含水率F
+            </th>
+            <th>检测结果       C( mg/L )</th>
+            <th>相对偏差     (  %   )</th>
+            <th>报出结果          ( mg/L )</th>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+
+          </tr>
+
+        </table>
+
+        <table id="tail-table" data-mobile-responsive="true" class="table table-hover">
+          <tr>
+            <td colspan="4" id="computeFormula">
+              计算公式：ρ=(As-Ab-a）/（b×V）</td>
+          </tr>
+          <tr>
+            <td colspan="4">
+              备注：</td>
+          </tr>
+          <tr>
+            <td colspan="2">检验员：    空白    </td>
+            <td colspan="2">核验员：    空白    </td>
+          </tr>
+
+        </table>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div th:include="include :: footer"></div>
+
+<script th:src="@{/water/view02/js/echarts-all.js}"></script>
+
+<script th:inline="javascript">
+        var prefix = ctx + "system/bizAssay";
+
+        var assayNo = [[${assayNo}]];
+
+
+        //初始化页面数据
+        $(function() {
+
+        });
+
+        function searchItem(){
+            var assayNo = $("#assayNo").val();
+            var assayItem = $("#assayItem").val();
+//            alert(assayNo);
+//            alert(assayItem);
+
+            var d = {};
+            d.assayNo = assayNo;
+            d.assayItem = assayItem;
+
+            $.ajax({
+                url: prefix + "/getAssayByItem",
+                data: JSON.stringify(d),
+                type: "POST",
+                cache: false,
+                contentType: "application/json;charset=utf-8",
+                processData: false,
+//            dataType: 'json',
+                success: function(result) {
+
+                    var itemData = eval('('+result.itemData+')');
+                    var curveData = eval('('+result.curveData+')');
+                    var methodData = eval('('+result.methodData+')');
+                    var assayItemNameData = eval('('+result.assayItemNameData+')');
+                    var ck0StrData = eval('('+result.ck0StrData+')');
+                    var ck1StrData = eval('('+result.ck1StrData+')');
+                    var crStrData = eval('('+result.crStrData+')');
+                    var recordName = eval('('+result.recordNameData+')');
+                    var trHtml="";
+                    var i=0;
+                    var typNum = "";
+                    var assayItem = itemData[0].assay_item;
+
+                    if (assayItem === "1" || assayItem === "2") {
+                                trHtml += "<tr class=\"cod\">\n"+
+                                "<th rowspan=\"2\">序号</th>\n"+
+                                "<th rowspan=\"2\">样品编号</th>\n"+
+                                "<th rowspan=\"2\">试样体积<p>V(ml)</p></th>\n"+
+                                "<th rowspan=\"2\">稀释倍数<p>f</p></th>\n"+
+                                "<th colspan=\"3\" rowspan=\"1\">消耗标准滴定溶液的体积(mL)\n"+
+                                "<th rowspan=\"2\">检测结果<p>ρ(mg/L)</p></th>\n"+
+                                "<th rowspan=\"2\">报出结果<p>(mg/L)</p></th>\n"+
+                                "</th>\n"+
+                              "</tr>\n"+
+                              "<tr class=\"cod\">\n"+
+                                   "<td>V始</td><td>V终</td><td>V耗</td>\n"+
+                                "</tr>";
+
+                                $("#computeFormula").html("<tr><td rowspan=\"2\">计算公式：</td></tr><tr><td>□ C0=10.00×0.250/V硫酸亚铁铵           □ C0=10.00×0.025/V硫酸亚铁铵 </td><td>C=[C0×(V耗空白-V耗样品)×8000]/V×f</td></tr>");
+                        }
+
+                    if (assayItem === "3") {
+                                trHtml += "<tr class=\"cod\">\n"+
+                                "<th>序号</th>\n"+
+                                "<th>样品编号</th>\n"+
+                                "<th>试样体积<p>V(ml)</p></th>\n"+
+                                "<th>吸光度<p>A<sub>s</sub>-A<sub>b</sub></p>\n"+
+                                "</th>\n"+
+                                "<th>检测结果<p>ρ(mg/L)</p></th>\n"+
+                                "<th>报出结果<p>(mg/L)</p></th>\n"+
+                              "</tr>";
+
+                              $("#computeFormula").html("<tr><td>计算公式：ρ=(As-Ab-a)/(b×V)</td></tr>");
+                        }
+                        if (assayItem === "4") {
+                                trHtml += "<tr class=\"cod\">\n"+
+                                "<th>序号</th>\n"+
+                                "<th>样品编号</th>\n"+
+                                "<th>试样体积<p>V(ml)</p></th>\n"+
+                                "<th>稀释倍数<p>f</p></th>\n"+
+                                "<th>吸光度<p>A<sub>s</sub>-A<sub>b</sub></p>\n"+
+                                "</th>\n"+
+                                "<th>检测结果<p>ρ(mg/L)</p></th>\n"+
+                                "<th>报出结果<p>(mg/L)</p></th>\n"+
+                              "</tr>";
+
+                              $("#computeFormula").html("<tr><td>计算公式：ρ=(Ar-A0-a)×f/(b×V)</tr></td>");
+
+
+                        }
+                        if (assayItem === "5") {
+                                trHtml += "<tr class=\"cod\">\n"+
+                                "<th>序号</th>\n"+
+                                "<th>样品编号</th>\n"+
+                                "<th>试样体积<p>V(ml)</p></th>\n"+
+                                "<th>试样测得磷的含量<p>m（μg）</p></th>\n"+
+
+                                "<th>检测结果<p>ρ(mg/L)</p></th>\n"+
+                                "<th>报出结果<p>(mg/L)</p></th>\n"+
+                              "</tr>";
+
+                              $("#computeFormula").html("<tr><td>计算公式：C=m/V</tr></td>");
+                        }
+
+                    $.each(itemData, function(key, value){
+
+
+                        i++;
+                        trHtml += "<tr  class=\"cod\"><td>"+i+"</td>\n";
+                        if(value.type_num == typNum && value.type_num!='1'){
+                          trHtml += "" ;
+                        } else {
+                          trHtml += "<td rowspan=\""+value.type_num+"\">"+value.assay_type+"</td>\n";
+                        }
+                        trHtml += "<td>"+value.sample_volume+"</td>\n" +
+                        "<td>"+value.result_abs+"</td>\n" +
+                        "<td>"+value.result_concentration+"</td>\n";
+
+                        if(value.type_num == typNum && value.type_num!='1'){
+                          trHtml += "" ;
+                        } else {
+                          trHtml += "<td rowspan=\""+value.type_num+"\">"+value.avg_result_concentration+"</td></tr>\n";
+                        }
+
+                        typNum = value.type_num;
+
+                    });
+
+                    $("#CurveCon1").html(curveData.curveCon1);
+                    $("#CurveCon2").html(curveData.curveCon2);
+                    $("#CurveCon3").html(curveData.curveCon3);
+                    $("#CurveCon4").html(curveData.curveCon4);
+                    $("#CurveCon5").html(curveData.curveCon5);
+                    $("#CurveCon6").html(curveData.curveCon6);
+                    $("#CurveCon7").html(curveData.curveCon7);
+
+                    $("#curveAbs1").html(curveData.curveAbs1);
+                    $("#curveAbs2").html(curveData.curveAbs2);
+                    $("#curveAbs3").html(curveData.curveAbs3);
+                    $("#curveAbs4").html(curveData.curveAbs4);
+                    $("#curveAbs5").html(curveData.curveAbs5);
+                    $("#curveAbs6").html(curveData.curveAbs6);
+                    $("#curveAbs7").html(curveData.curveAbs7);
+
+                    $("#curve_b").html("b= "+ck0StrData);
+                    $("#curve_a").html("a= "+ck1StrData);
+                    $("#curve_r").html("r= "+crStrData);
+
+                    $("#theIteName").html(assayItemNameData);
+                    $("#methodname").html(methodData);
+                     $("#recordName").html(recordName);
+
+                    $(".cod").each(function(){
+                        $(this).remove();
+                    });
+
+                    var row=0;
+                    var tab="sample-table";
+                    addTr(tab, row, trHtml);
+
+                    if(assayItem!=""){
+                        $("#Docx_button").css('display','');
+                    }else{
+                        $("#Docx_button").css('display','none');
+                    }
+                },
+                error: function(error) {
+                    alert("化验编号: "+NoValue+" 无化验数据");
+                    $(".cod").each(function(){
+                        $(this).remove();
+                    });
+                }
+            })
+
+        }
+
+        function addTr(tab, row, trHtml){
+            //获取table最后一行 $("#tab tr:last")
+            //获取table第一行 $("#tab tr").eq(0)
+            //获取table倒数第二行 $("#tab tr").eq(-2)
+            var $tr=$("#"+tab+" tr").eq(row);
+            if($tr.size()==0){
+                alert("指定的table id或行数不存在！");
+                return;
+            }
+            $tr.after(trHtml);
+        }
+
+
+
+        function Docx(){
+            var obj = $("#assayItem").val();
+            window.location.href = prefix + "/getAllDoc/"+assayNo+"/"+obj;
+        }
+    </script>
+</body>
+</html>

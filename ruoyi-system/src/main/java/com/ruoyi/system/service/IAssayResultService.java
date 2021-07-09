@@ -6,6 +6,7 @@ import com.ruoyi.system.domain.BizAssay;
 import com.ruoyi.system.domain.OutDataEnity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 化验结果 服务层
@@ -15,6 +16,15 @@ import java.util.List;
  */
 public interface IAssayResultService
 {
+	/**
+	 * 新 查询化验结果列表
+	 *
+	 * @param assayResult 化验结果信息
+	 * @return 化验结果集合
+	 */
+	public List<Map<String, Object>> selectAssayResultListNew(AssayResult assayResult);
+
+
 	/**
      * 查询化验结果信息
      *

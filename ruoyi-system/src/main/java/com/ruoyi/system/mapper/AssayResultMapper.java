@@ -7,6 +7,7 @@ import com.ruoyi.system.domain.OutDataEnity;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 化验结果 数据层
@@ -16,6 +17,15 @@ import java.util.List;
  */
 public interface AssayResultMapper
 {
+
+	/**
+	 * 新 查询化验结果列表
+	 *
+	 * @param assayResult 化验结果信息
+	 * @return 化验结果集合
+	 */
+	public List<Map<String, Object>> selectAssayResultListNew(AssayResult assayResult);
+
 	/**
      * 查询化验结果信息
      *

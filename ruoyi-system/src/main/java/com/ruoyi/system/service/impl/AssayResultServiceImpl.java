@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 化验结果 服务层实现
@@ -26,6 +27,16 @@ public class AssayResultServiceImpl implements IAssayResultService
 {
 	@Autowired
 	private AssayResultMapper assayResultMapper;
+
+	/**
+	 * 新 查询化验结果列表
+	 *
+	 * @param assayResult 化验结果信息
+	 * @return 化验结果集合
+	 */
+	public List<Map<String, Object>> selectAssayResultListNew(AssayResult assayResult) {
+		return assayResultMapper.selectAssayResultListNew(assayResult);
+	}
 
 	/**
      * 查询化验结果信息

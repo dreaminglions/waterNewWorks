@@ -61,6 +61,84 @@ end) as assay_type,
 		left join z_assay_sample s on s.sample_no = r.sample_no and s.assay_no = r.assay_no
 		left join biz_water_work w on s.work_no = w.works_no
     </sql>
+
+    <select id="selectAssayResultListNew" parameterType="AssayResult" resultType="Map">
+
+        SELECT
+        ar.result_id,
+        ar.assay_no,
+        ar.result_no,
+        ar.sample_no,
+
+        Round( ar.sample_volume, 3 ) sample_volume,
+        ar.device_no,
+        ar.assay_item,
+        Round( ar.result_concentration, 3 ) result_concentration,
+        ar.result_abs,
+        ar.result_date,
+        ar.result_time,
+        ar.curve_k0,
+        ar.curve_k1,
+        ar.curve_id,
+        ar.create_by,
+        ar.create_time,
+        ar.update_by,
+        ar.update_time,
+        ar.assay_type,
+        sa.item_name AS assay_sample_name,
+        t.item_name,
+        s.sample_id,
+        s.sample_name,
+        w.works_id,
+        w.works_name,
+        w.works_no,
+        ar2.avg_result_concentration,
+        ar2.type_num
+        FROM
+        z_assay_result ar
+        LEFT JOIN
+        (
+        SELECT
+        rin.assay_type,
+        rin.result_date,
+        rin.assay_no,
+        rin.assay_item,
+        Round(AVG( rin.result_concentration ), 3) avg_result_concentration,
+        COUNT(rin.assay_type) AS type_num
+        FROM
+        z_assay_result rin
+        WHERE
+        1 = 1
+        AND rin.assay_no = #{assayNo}
+        AND rin.assay_item = #{assayItem}
+        GROUP BY
+        rin.assay_type,
+        rin.result_date,
+        rin.assay_no,
+        rin.assay_item
+        ) AS ar2 ON ar.assay_no = ar2.assay_no AND ar.assay_type = ar2.assay_type
+        LEFT JOIN sys_assay_item t ON t.assay_item = ar.assay_item
+        LEFT JOIN sys_assay_sample sa ON ar.assay_type = sa.assay_type
+        LEFT JOIN z_assay_sample s ON s.sample_no = ar.sample_no
+        AND s.assay_no = ar.assay_no
+        LEFT JOIN biz_water_work w ON s.work_no = w.works_no
+        WHERE 1=1
+        <if test="resultId != null "> and ar.result_id = #{resultId}</if>
+        <if test="assayNo != null  and assayNo != '' ">
+            AND ar.assay_no = #{assayNo}</if>
+        <if test="deviceNo != null and deviceNo != ''"> and ar.device_no = #{deviceNo}</if>
+        <if test="assayItem != null and assayItem != ''"> and ar.assay_item = #{assayItem}</if>
+        <if test="resultDate != null  and resultDate != '' "> and ar.result_date = #{resultDate}</if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            AND datediff(dd,#{params.beginTime},ar.result_time) &gt;=0
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            AND datediff(dd,ar.result_time,#{params.endTime}) &gt;=0
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+        order by ar.result_date desc
+    </select>
 	
     <select id="selectAssayResultList" parameterType="AssayResult" resultMap="AssayResultResult">
         <include refid="selectAssayResultVo"/>
