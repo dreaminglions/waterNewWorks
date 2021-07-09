@@ -749,7 +749,7 @@ public class BizAssayController extends BaseController
 		String path = ClassUtils.getDefaultClassLoader().getResource("").getPath();
 		String resource = path+"static/docx/报表记录测试2.docx";
 //		String resource = path+"static/docx/newdocx/氨氮新报表测试报告模板.docx";
-		Configure config = Configure.newBuilder().customPolicy("detail_table", new AssayTablePolicy()).build();
+		Configure config = Configure.newBuilder().customPolicy("detail_table", new AssayTablePolicy(6)).build();
 		XWPFTemplate template = XWPFTemplate.compile(resource, config).render(data);
 
 
@@ -819,23 +819,27 @@ public class BizAssayController extends BaseController
 
 
 		String docName = "";
+		int assayDetailRows = 0;
 
 		docName = "报表记录测试2.doc";
 		String assaymethod= "";
 		if("1".equals(obj)||"2".equals(obj)){
 			 docName = "COD分析项目原始记录.doc";
 			assaymethod = "HJ399-2007化学需氧量的测定 快速消解分光光度法";
+			assayDetailRows = 10;
 		}else if("5".equals(obj)){
 			docName = "总磷分析项目原始记录.doc";
 			assaymethod = "GB11893-1989水质总磷的测定钼酸铵分光光度法";
+			assayDetailRows = 12;
 		}else if(("4".equals(obj))){
 			docName = "总氮分析项目原始记录.doc";
 			assaymethod = "HJ636-2012水质总氮的测定碱性过硫酸钾消解紫外分光光度法";
+			assayDetailRows = 12;
 		}else if(("3".equals(obj))){
 			docName = "氨氮分析项目原始记录.doc";
 			assaymethod = "HJ535-2009水质氨氮的测定纳氏试剂分光光度法";
+			assayDetailRows = 12;
 		}
-
 
 		AssayTotalData data = new AssayTotalData();
 		AssayData assayData = new AssayData();
@@ -851,6 +855,9 @@ public class BizAssayController extends BaseController
 			RowRenderData assayRow = RowRenderData.build(i+"", assayType, result.getSampleVolume()+"", result.getResultAbs()+"", result.getResultConcentration()+"", result.getResultConcentration()+"");
 			assayList.add(assayRow);
 		}
+
+
+		System.out.println("assayList.size():"+assayList.size());
 
 		assayData.setAssayResult(assayList);
 		data.setAssayTable(assayData);
@@ -877,26 +884,44 @@ public class BizAssayController extends BaseController
 		data.setA(curve_item.getCurveK1()+"");
 		data.setR(curve_item.getCurveR()+"");
 
+		System.out.println(data.getAssayTable().getAssayResult().size());
+
 		String path = ClassUtils.getDefaultClassLoader().getResource("").getPath();
-		String resource = path+"static/docx/报表记录测试2.docx";
+		String resource = "";
+		if ("1".equals(obj) || "2".equals(obj)) {
+			resource = path+"static/docx/newdocx/cod新测试报告模板.docx";
+		}
+		if ("3".equals(obj)) {
+			resource = path+"static/docx/newdocx/氨氮新报表测试报告模板.docx";
+		}
+		if ("4".equals(obj)) {
+			resource = path+"static/docx/newdocx/总氮新报表测试报告模板.docx";
+		}
+		if ("5".equals(obj)) {
+			resource = path+"static/docx/newdocx/总磷新报表测试报告模板.docx";
+		}
+
+		System.out.println("resource:"+resource);
+
 //		String resource = path+"static/docx/newdocx/氨氮新报表测试报告模板.docx";
-		Configure config = Configure.newBuilder().customPolicy("detail_table", new AssayTablePolicy()).build();
-		XWPFTemplate template = XWPFTemplate.compile(resource, config).render(data);
+		Configure config1 = Configure.newBuilder().customPolicy("detail_table", new AssayTablePolicy(assayDetailRows)).build();
+//		Configure config1 = Configure.newBuilder().customPolicy("detail_table", new AssayTablePolicy(assayDetailRows)).build();
+		XWPFTemplate template1 = XWPFTemplate.compile(resource, config1).render(data);
 
 
 		OutputStream out = null;
 		try {
-			out = new FileOutputStream("out_template.docx");
-			template.write(out);
+			out = new FileOutputStream("out_template1.docx");
+			template1.write(out);
 			out.flush();
 			out.close();
-			template.close();
+			template1.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		InputStream fis = null;
 		OutputStream toClient = null;
-		File file = new File("out_template.docx");
+		File file = new File("out_template1.docx");
 		try {
 			fis = new BufferedInputStream(new FileInputStream(file));
 			byte[] buffer = new byte[fis.available()];

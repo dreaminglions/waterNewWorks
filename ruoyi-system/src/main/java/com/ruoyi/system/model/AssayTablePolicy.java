@@ -13,13 +13,19 @@ public class AssayTablePolicy extends DynamicTableRenderPolicy {
     // 化验结果数据所在行数
     int assayRow = 6;
 
+    public AssayTablePolicy(int assayRow) {
+        this.assayRow = assayRow;
+    }
+
     @Override
     public void render(XWPFTable table, Object data) {
+        System.out.println("Object data:" + data);
         if (null == data) return;
         AssayData assayData = (AssayData) data;
 
         // 化验结果明细
         List<RowRenderData> assayResult = assayData.getAssayResult();
+        System.out.println("assayRow:"+ assayRow);
 
         if (null != assayResult) {
             table.removeRow(assayRow);
