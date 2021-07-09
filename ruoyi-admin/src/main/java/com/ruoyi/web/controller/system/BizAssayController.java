@@ -631,16 +631,20 @@ public class BizAssayController extends BaseController
 		String assaymethod= "";
 		String recordName = "";
 		if("1".equals(assayItem)||"2".equals(assayItem)){
-			assaymethod = "HJ399-2007化学需氧量的测定 快速消解分光光度法";
+//			assaymethod = "HJ399-2007化学需氧量的测定 快速消解分光光度法";
+			assaymethod = "水质 化学需氧量的测定 重铬酸盐法         HJ 828-2017";
 			recordName = "容量法检测原始记录";
 		}else if("5".equals(assayItem)){
-			assaymethod = "GB11893-1989水质总磷的测定钼酸铵分光光度法";
+//			assaymethod = "GB11893-1989水质总磷的测定钼酸铵分光光度法";
+			assaymethod = "水质 总磷的测定 钼酸铵分光光度法       GB 11893-1989";
 			recordName = "分光光度法检测原始记录";
 		}else if("4".equals(assayItem)){
-			assaymethod = "HJ636-2012水质总氮的测定碱性过硫酸钾消解紫外分光光度法";
+//			assaymethod = "HJ636-2012水质总氮的测定碱性过硫酸钾消解紫外分光光度法";
+			assaymethod = "水质 总氮的测定 碱性过硫酸钾消解紫外分光光度法 HJ 636-2012";
 			recordName = "分光光度法检测原始记录";
 		}else if("3".equals(assayItem)){
-			assaymethod = "HJ535-2009水质氨氮的测定纳氏试剂分光光度法";
+//			assaymethod = "HJ535-2009水质氨氮的测定纳氏试剂分光光度法";
+			assaymethod = "水质 氨氮的测定 纳氏试剂分光光度法       HJ 535-2009";
 			recordName = "分光光度法检测原始记录";
 		}
 
@@ -664,6 +668,136 @@ public class BizAssayController extends BaseController
 		ajax.put("crStrData",crStrData);
 		ajax.put("recordNameData",recordNameData);
 		return ajax;
+	}
+
+	@GetMapping("/getOldAllDoc/{assayNo}/{obj}")
+	@ResponseBody
+	public String  getOldAllDoc(@PathVariable("assayNo") String assayNo,@PathVariable("obj") String obj,HttpServletRequest request, HttpServletResponse response) throws IOException {
+//		List<Map<String,Object>> mapList =  new ArrayList<>();
+
+		BizAssay assay = bizAssayService.selectBizAssayByAssayNo(assayNo);
+
+		AssayResult assayResult  = new AssayResult();
+		assayResult.setAssayNo(assayNo);
+		assayResult.setAssayItem(obj);
+		List<AssayResult> resultList = assayResultService.selectAssayResultList(assayResult);
+		AssayCurve curve_item = assayCurveService.selectAssayCurveByCurveNo(obj);
+
+
+		String docName = "";
+
+		docName = "报表记录测试2.doc";
+		String assaymethod= "";
+		if("1".equals(obj)||"2".equals(obj)){
+			docName = "COD分析项目原始记录.doc";
+			assaymethod = "HJ399-2007化学需氧量的测定 快速消解分光光度法";
+		}else if("5".equals(obj)){
+			docName = "总磷分析项目原始记录.doc";
+			assaymethod = "GB11893-1989水质总磷的测定钼酸铵分光光度法";
+		}else if(("4".equals(obj))){
+			docName = "总氮分析项目原始记录.doc";
+			assaymethod = "HJ636-2012水质总氮的测定碱性过硫酸钾消解紫外分光光度法";
+		}else if(("3".equals(obj))){
+			docName = "氨氮分析项目原始记录.doc";
+			assaymethod = "HJ535-2009水质氨氮的测定纳氏试剂分光光度法";
+		}
+
+
+		AssayTotalData data = new AssayTotalData();
+		AssayData assayData = new AssayData();
+
+		List<RowRenderData> assayList = new ArrayList<RowRenderData>();
+		int i=0;
+		for(AssayResult result : resultList){
+			i++;
+			String assayType="样品";
+			if(result.getAssayType()!=null){
+				assayType=result.getAssayType();
+			}
+			RowRenderData assayRow = RowRenderData.build(i+"", assayType, result.getSampleVolume()+"", result.getResultAbs()+"", result.getResultConcentration()+"", result.getResultConcentration()+"");
+			assayList.add(assayRow);
+		}
+
+		assayData.setAssayResult(assayList);
+		data.setAssayTable(assayData);
+		data.setOrderno(assay.getAssayNo());
+
+		data.setAssaymethod(assaymethod);
+		data.setUg1(curve_item.getCurveCon1()+"");
+		data.setUg2(curve_item.getCurveCon2()+"");
+		data.setUg3(curve_item.getCurveCon3()+"");
+		data.setUg4(curve_item.getCurveCon4()+"");
+		data.setUg5(curve_item.getCurveCon5()+"");
+		data.setUg6(curve_item.getCurveCon6()+"");
+		data.setUg7(curve_item.getCurveCon7()+"");
+
+		data.setOD1(curve_item.getCurveAbs1()+"");
+		data.setOD2(curve_item.getCurveAbs2()+"");
+		data.setOD3(curve_item.getCurveAbs3()+"");
+		data.setOD4(curve_item.getCurveAbs4()+"");
+		data.setOD5(curve_item.getCurveAbs5()+"");
+		data.setOD6(curve_item.getCurveAbs6()+"");
+		data.setOD7(curve_item.getCurveAbs7()+"");
+
+		data.setB(curve_item.getCurveK0()+"");
+		data.setA(curve_item.getCurveK1()+"");
+		data.setR(curve_item.getCurveR()+"");
+
+		String path = ClassUtils.getDefaultClassLoader().getResource("").getPath();
+		String resource = path+"static/docx/报表记录测试2.docx";
+//		String resource = path+"static/docx/newdocx/氨氮新报表测试报告模板.docx";
+		Configure config = Configure.newBuilder().customPolicy("detail_table", new AssayTablePolicy()).build();
+		XWPFTemplate template = XWPFTemplate.compile(resource, config).render(data);
+
+
+		OutputStream out = null;
+		try {
+			out = new FileOutputStream("out_template.docx");
+			template.write(out);
+			out.flush();
+			out.close();
+			template.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		InputStream fis = null;
+		OutputStream toClient = null;
+		File file = new File("out_template.docx");
+		try {
+			fis = new BufferedInputStream(new FileInputStream(file));
+			byte[] buffer = new byte[fis.available()];
+			fis.read(buffer);
+			fis.close();
+			// 清空response
+			response.reset();
+			// 设置response的Header
+			String newWordName = URLEncoder.encode(docName, "utf-8"); //这里要用URLEncoder转下才能正确显示中文名称
+			response.addHeader("Content-Disposition", "attachment;filename=" + newWordName+"");
+			response.addHeader("Content-Length", "" + file.length());
+			toClient = new BufferedOutputStream(response.getOutputStream());
+			response.setContentType("application/octet-stream");
+			toClient.write(buffer);
+			toClient.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				if(fis!=null){
+					fis.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(toClient!=null){
+					toClient.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return prefix + "/getdoc";
 	}
 
 
@@ -714,6 +848,7 @@ public class BizAssayController extends BaseController
 			RowRenderData assayRow = RowRenderData.build(i+"", assayType, result.getSampleVolume()+"", result.getResultAbs()+"", result.getResultConcentration()+"", result.getResultConcentration()+"");
 			assayList.add(assayRow);
 		}
+
 		assayData.setAssayResult(assayList);
 		data.setAssayTable(assayData);
 		data.setOrderno(assay.getAssayNo());
@@ -740,8 +875,8 @@ public class BizAssayController extends BaseController
 		data.setR(curve_item.getCurveR()+"");
 
 		String path = ClassUtils.getDefaultClassLoader().getResource("").getPath();
-//		String resource = path+"static/docx/报表记录测试2.docx";
-		String resource = path+"static/docx/新报表测试报告模板.docx";
+		String resource = path+"static/docx/报表记录测试2.docx";
+//		String resource = path+"static/docx/newdocx/氨氮新报表测试报告模板.docx";
 		Configure config = Configure.newBuilder().customPolicy("detail_table", new AssayTablePolicy()).build();
 		XWPFTemplate template = XWPFTemplate.compile(resource, config).render(data);
 

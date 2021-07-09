@@ -84,6 +84,32 @@
             </td>
           </tr>
         </table>
+        <!--cod报表头部部分 -->
+        <table id="cod-part" style="display: none; width:100%" data-mobile-responsive="true" class="table table-hover"  >
+          <tr>
+            <th rowspan="2" style="border: 1px solid #e7eaec;">
+              检测依据:
+            </th>
+            <td rowspan="2" colspan="2" style="border: 1px solid #e7eaec" id="codMethodname">
+              水质 化学需氧量的测定 重铬酸盐法         HJ 828-2017
+            </td>
+            <td style="border: 1px solid #e7eaec" colspan="2" >测定日期： [[${assayDate}]]</td>
+          </tr>
+          <tr>
+            <td style="border: 1px solid #e7eaec" colspan="2" >标准滴定溶液名称：硫酸亚铁铵</td>
+          </tr>
+
+          <tr style="border: 1px solid #e7eaec">
+            <td rowspan="2" colspan="1" style="border: 1px solid #e7eaec">标定时间：</td>
+            <td rowspan="1" colspan="2"  style="border: 1px solid #e7eaec">V硫酸亚铁铵高=        mL </td>
+            <td rowspan="1" colspan="1"  style="border: 1px solid #e7eaec">标准滴定溶液浓度：C0高=         mol/L</td>
+          </tr>
+          <tr style="border: 1px solid #e7eaec">
+            <td rowspan="1" colspan="2"  style="border: 1px solid #e7eaec">V硫酸亚铁铵低=        mL</td>
+            <td rowspan="1" colspan="1"  style="border: 1px solid #e7eaec">标准滴定溶液浓度：C0低=         mol/L</td>
+          </tr>
+
+        </table>
 
         <table id="item-table" data-mobile-responsive="true" class="table table-hover"  th:object="${bizAssayMethod}">
           <tr>
@@ -244,6 +270,11 @@
                     var assayItem = itemData[0].assay_item;
 
                     if (assayItem === "1" || assayItem === "2") {
+
+                                $("#cod-part").css('display','table');
+                                $("#item-table").css('display','none');
+                                $("#curve-table").css('display','none');
+
                                 trHtml += "<tr class=\"cod\">\n"+
                                 "<th rowspan=\"2\">序号</th>\n"+
                                 "<th rowspan=\"2\">样品编号</th>\n"+
@@ -262,6 +293,10 @@
                         }
 
                     if (assayItem === "3") {
+                                $("#cod-part").css('display','none');
+                                $("#item-table").css('display','table');
+                                $("#curve-table").css('display','table');
+
                                 trHtml += "<tr class=\"cod\">\n"+
                                 "<th>序号</th>\n"+
                                 "<th>样品编号</th>\n"+
@@ -275,6 +310,9 @@
                               $("#computeFormula").html("<tr><td>计算公式：ρ=(As-Ab-a)/(b×V)</td></tr>");
                         }
                         if (assayItem === "4") {
+                        $("#cod-part").css('display','none');
+                                $("#item-table").css('display','table');
+                                $("#curve-table").css('display','table');
                                 trHtml += "<tr class=\"cod\">\n"+
                                 "<th>序号</th>\n"+
                                 "<th>样品编号</th>\n"+
@@ -291,6 +329,9 @@
 
                         }
                         if (assayItem === "5") {
+                        $("#cod-part").css('display','none');
+                                $("#item-table").css('display','table');
+                                $("#curve-table").css('display','table');
                                 trHtml += "<tr class=\"cod\">\n"+
                                 "<th>序号</th>\n"+
                                 "<th>样品编号</th>\n"+
@@ -306,23 +347,83 @@
 
                     $.each(itemData, function(key, value){
 
-
                         i++;
-                        trHtml += "<tr  class=\"cod\"><td>"+i+"</td>\n";
-                        if(value.type_num == typNum && value.type_num!='1'){
-                          trHtml += "" ;
-                        } else {
-                          trHtml += "<td rowspan=\""+value.type_num+"\">"+value.assay_type+"</td>\n";
-                        }
-                        trHtml += "<td>"+value.sample_volume+"</td>\n" +
-                        "<td>"+value.result_abs+"</td>\n" +
-                        "<td>"+value.result_concentration+"</td>\n";
 
-                        if(value.type_num == typNum && value.type_num!='1'){
-                          trHtml += "" ;
-                        } else {
-                          trHtml += "<td rowspan=\""+value.type_num+"\">"+value.avg_result_concentration+"</td></tr>\n";
+                        if(assayItem === "1" || assayItem === "2") {
+
+                            trHtml += "<tr  class=\"cod\"><td>"+i+"</td>\n";
+                            if(value.type_num == typNum && value.type_num!='1'){
+                              trHtml += "" ;
+                            } else {
+                              trHtml += "<td rowspan=\""+value.type_num+"\">"+value.assay_type+"</td>\n";
+                            }
+                            trHtml += "<td>"+value.sample_volume+"</td>\n" +
+                            "<td>"+""+"</td>\n" +
+                            "<td>"+""+"</td>\n" +
+                            "<td>"+""+"</td>\n" +
+                            "<td>"+""+"</td>\n" +
+                            "<td>"+value.result_concentration+"</td>\n";
+
+                            if(value.type_num == typNum && value.type_num!='1'){
+                              trHtml += "" ;
+                            } else {
+                              trHtml += "<td rowspan=\""+value.type_num+"\">"+value.avg_result_concentration+"</td></tr>\n";
+                            }
+
                         }
+                        if(assayItem === "3") {
+                          trHtml += "<tr  class=\"cod\"><td>"+i+"</td>\n";
+                          if(value.type_num == typNum && value.type_num!='1'){
+                            trHtml += "" ;
+                          } else {
+                            trHtml += "<td rowspan=\""+value.type_num+"\">"+value.assay_type+"</td>\n";
+                          }
+                          trHtml += "<td>"+value.sample_volume+"</td>\n" +
+                          "<td>"+value.result_abs+"</td>\n" +
+                          "<td>"+value.result_concentration+"</td>\n";
+
+                          if(value.type_num == typNum && value.type_num!='1'){
+                            trHtml += "" ;
+                          } else {
+                            trHtml += "<td rowspan=\""+value.type_num+"\">"+value.avg_result_concentration+"</td></tr>\n";
+                          }
+                        }
+                        if(assayItem === "4") {
+                              trHtml += "<tr  class=\"cod\"><td>"+i+"</td>\n";
+                              if(value.type_num == typNum && value.type_num!='1'){
+                                trHtml += "" ;
+                              } else {
+                                trHtml += "<td rowspan=\""+value.type_num+"\">"+value.assay_type+"</td>\n";
+                              }
+                              trHtml += "<td>"+value.sample_volume+"</td>\n" +
+                               "<td>"+""+"</td>\n" +
+                              "<td>"+value.result_abs+"</td>\n" +
+                              "<td>"+value.result_concentration+"</td>\n";
+
+                              if(value.type_num == typNum && value.type_num!='1'){
+                                trHtml += "" ;
+                              } else {
+                                trHtml += "<td rowspan=\""+value.type_num+"\">"+value.avg_result_concentration+"</td></tr>\n";
+                              }
+                        }
+                        if(assayItem === "5") {
+                            trHtml += "<tr  class=\"cod\"><td>"+i+"</td>\n";
+                            if(value.type_num == typNum && value.type_num!='1'){
+                              trHtml += "" ;
+                            } else {
+                              trHtml += "<td rowspan=\""+value.type_num+"\">"+value.assay_type+"</td>\n";
+                            }
+                            trHtml += "<td>"+value.sample_volume+"</td>\n" +
+                            "<td>"+""+"</td>\n" +
+                            "<td>"+value.result_concentration+"</td>\n";
+
+                            if(value.type_num == typNum && value.type_num!='1'){
+                              trHtml += "" ;
+                            } else {
+                              trHtml += "<td rowspan=\""+value.type_num+"\">"+value.avg_result_concentration+"</td></tr>\n";
+                            }
+                        }
+
 
                         typNum = value.type_num;
 
@@ -387,8 +488,6 @@
             }
             $tr.after(trHtml);
         }
-
-
 
         function Docx(){
             var obj = $("#assayItem").val();

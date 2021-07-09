@@ -110,7 +110,8 @@
               仪器名称/型号/编号
             </th>
             <td rowspan="1" colspan="3" style="border: 1px solid #e7eaec" id="methodname3">
-              þ双光束紫外可见分光光度计/TU-1901/KR-144                                   □ 双光束紫外可见分光光度计/TU-1901/KR-254
+              <span id="methd1">&#9745</span>双光束紫外可见分光光度计/TU-1901/KR-144<br/>
+              <span id="methd2">&#9746</span>双光束紫外可见分光光度计/TU-1901/KR-254
             </td>
           </tr>
           <tr>
@@ -163,17 +164,23 @@
         </table>
 
         <table id="sample-table" data-mobile-responsive="true" class="table table-hover">
-          <tr  class="cod">
-            <th>序号</th>
-            <th>样品编号</th>
-            <th>þ试样体积V(mL)   □试样质量m(g)</th>
-            <th>
-              þ稀释倍数f   □含水率F
-            </th>
-            <th>检测结果       C( mg/L )</th>
-            <th>相对偏差     (  %   )</th>
-            <th>报出结果          ( mg/L )</th>
-          </tr>
+
+            <tr>
+              <th>序号</th>
+              <th>样品编号</th>
+              <th>
+                <span id="sample_V">&#9745</span> 试样体积V(mL)<br/>
+                <span id="sample_M">&#9746</span> 试样质量m(g)
+              </th>
+              <th>
+                <span id="xishi_bs">&#9745</span>稀释倍数f<br/>
+                <span id="hs_rate">&#9746</span>含水率F
+              </th>
+              <th>检测结果       C( mg/L )</th>
+              <th>相对偏差     (  %   )</th>
+              <th>报出结果          ( mg/L )</th>
+            </tr>
+
           <tr>
             <td></td>
             <td></td>
@@ -192,17 +199,37 @@
         </table>
 
         <table id="tail-table" data-mobile-responsive="true" class="table table-hover">
+
+          <tr style="border: 1px solid #e7eaec">
+            <td rowspan="2" colspan="1" style="border: 1px solid #e7eaec">准确度</td>
+            <td rowspan="1" colspan="2"  style="border: 1px solid #e7eaec">质控样样品编号</td>
+            <td rowspan="1" colspan="1"  style="border: 1px solid #e7eaec">保证值（mg/L）</td>
+            <td rowspan="1" colspan="2"  style="border: 1px solid #e7eaec">测定值（mg/L）</td>
+            <td rowspan="1" colspan="1"  style="border: 1px solid #e7eaec">是 否 合 格</td>
+          </tr>
+          <tr style="border: 1px solid #e7eaec">
+            <td rowspan="1" colspan="2"  style="border: 1px solid #e7eaec"></td>
+            <td rowspan="1" colspan="1"  style="border: 1px solid #e7eaec"></td>
+            <td rowspan="1" colspan="2"  style="border: 1px solid #e7eaec"></td>
+            <td rowspan="1" colspan="1"  style="border: 1px solid #e7eaec"><span id="shi">&#9745</span>是    <span id="fou">&#9746</span>否</td>
+          </tr>
+
           <tr>
             <td colspan="4" id="computeFormula">
-              计算公式：ρ=(As-Ab-a）/（b×V）</td>
+              计算公式：C=c×f，报出结果=C<br/>
+              c-电子版记录中所测样品的浓度，mg/L</td>
+            <td>A<sub>0</sub>:<span> </span></td>
+            <td>精密度：<img th:src="@{/img/jmdgongshi.png}"></td>
           </tr>
           <tr>
             <td colspan="4">
-              备注：</td>
+              备注：澄清透明无色的样品可不进行前处理工作。</td>
           </tr>
           <tr>
-            <td colspan="2">检验员：    空白    </td>
-            <td colspan="2">核验员：    空白    </td>
+            <td colspan="2">检验：      </td>
+            <td colspan="2">复核：      </td>
+            <td colspan="2">审核：      </td>
+            <td colspan="2">第 页 共 页   </td>
           </tr>
 
         </table>
@@ -260,69 +287,7 @@
                     var typNum = "";
                     var assayItem = itemData[0].assay_item;
 
-                    if (assayItem === "1" || assayItem === "2") {
-                                trHtml += "<tr class=\"cod\">\n"+
-                                "<th rowspan=\"2\">序号</th>\n"+
-                                "<th rowspan=\"2\">样品编号</th>\n"+
-                                "<th rowspan=\"2\">试样体积<p>V(ml)</p></th>\n"+
-                                "<th rowspan=\"2\">稀释倍数<p>f</p></th>\n"+
-                                "<th colspan=\"3\" rowspan=\"1\">消耗标准滴定溶液的体积(mL)\n"+
-                                "<th rowspan=\"2\">检测结果<p>ρ(mg/L)</p></th>\n"+
-                                "<th rowspan=\"2\">报出结果<p>(mg/L)</p></th>\n"+
-                                "</th>\n"+
-                              "</tr>\n"+
-                              "<tr class=\"cod\">\n"+
-                                   "<td>V始</td><td>V终</td><td>V耗</td>\n"+
-                                "</tr>";
-
-                                $("#computeFormula").html("<tr><td rowspan=\"2\">计算公式：</td></tr><tr><td>□ C0=10.00×0.250/V硫酸亚铁铵           □ C0=10.00×0.025/V硫酸亚铁铵 </td><td>C=[C0×(V耗空白-V耗样品)×8000]/V×f</td></tr>");
-                        }
-
-                    if (assayItem === "3") {
-                                trHtml += "<tr class=\"cod\">\n"+
-                                "<th>序号</th>\n"+
-                                "<th>样品编号</th>\n"+
-                                "<th>试样体积<p>V(ml)</p></th>\n"+
-                                "<th>吸光度<p>A<sub>s</sub>-A<sub>b</sub></p>\n"+
-                                "</th>\n"+
-                                "<th>检测结果<p>ρ(mg/L)</p></th>\n"+
-                                "<th>报出结果<p>(mg/L)</p></th>\n"+
-                              "</tr>";
-
-                              $("#computeFormula").html("<tr><td>计算公式：ρ=(As-Ab-a)/(b×V)</td></tr>");
-                        }
-                        if (assayItem === "4") {
-                                trHtml += "<tr class=\"cod\">\n"+
-                                "<th>序号</th>\n"+
-                                "<th>样品编号</th>\n"+
-                                "<th>试样体积<p>V(ml)</p></th>\n"+
-                                "<th>稀释倍数<p>f</p></th>\n"+
-                                "<th>吸光度<p>A<sub>s</sub>-A<sub>b</sub></p>\n"+
-                                "</th>\n"+
-                                "<th>检测结果<p>ρ(mg/L)</p></th>\n"+
-                                "<th>报出结果<p>(mg/L)</p></th>\n"+
-                              "</tr>";
-
-                              $("#computeFormula").html("<tr><td>计算公式：ρ=(Ar-A0-a)×f/(b×V)</tr></td>");
-
-
-                        }
-                        if (assayItem === "5") {
-                                trHtml += "<tr class=\"cod\">\n"+
-                                "<th>序号</th>\n"+
-                                "<th>样品编号</th>\n"+
-                                "<th>试样体积<p>V(ml)</p></th>\n"+
-                                "<th>试样测得磷的含量<p>m（μg）</p></th>\n"+
-
-                                "<th>检测结果<p>ρ(mg/L)</p></th>\n"+
-                                "<th>报出结果<p>(mg/L)</p></th>\n"+
-                              "</tr>";
-
-                              $("#computeFormula").html("<tr><td>计算公式：C=m/V</tr></td>");
-                        }
-
                     $.each(itemData, function(key, value){
-
 
                         i++;
                         trHtml += "<tr  class=\"cod\"><td>"+i+"</td>\n";
@@ -332,9 +297,10 @@
                           trHtml += "<td rowspan=\""+value.type_num+"\">"+value.assay_type+"</td>\n";
                         }
                         trHtml += "<td>"+value.sample_volume+"</td>\n" +
-                        "<td>"+value.result_abs+"</td>\n" +
-                        "<td>"+value.result_concentration+"</td>\n";
+                        "<td>"+""+"</td>\n" +
 
+                        "<td>"+value.result_concentration+"</td>\n"+
+                        "<td>"+""+"</td>\n";
                         if(value.type_num == typNum && value.type_num!='1'){
                           trHtml += "" ;
                         } else {

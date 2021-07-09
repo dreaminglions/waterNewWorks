@@ -12,6 +12,7 @@ import java.util.List;
 public class AssayTablePolicy extends DynamicTableRenderPolicy {
     // 化验结果数据所在行数
     int assayRow = 6;
+
     @Override
     public void render(XWPFTable table, Object data) {
         if (null == data) return;
@@ -19,6 +20,7 @@ public class AssayTablePolicy extends DynamicTableRenderPolicy {
 
         // 化验结果明细
         List<RowRenderData> assayResult = assayData.getAssayResult();
+
         if (null != assayResult) {
             table.removeRow(assayRow);
             int size = assayResult.size()-1;
@@ -30,6 +32,7 @@ public class AssayTablePolicy extends DynamicTableRenderPolicy {
                 // 合并单元格
                 TableTools.mergeCellsHorizonal(table, assayRow, 3, 5);
                 TableTools.mergeCellsHorizonal(table, assayRow, 4, 6);
+
                 // 渲染单行货品明细数据
                 MiniTableRenderPolicy.Helper.renderRow(table, assayRow, assayResult.get(i));
             }
