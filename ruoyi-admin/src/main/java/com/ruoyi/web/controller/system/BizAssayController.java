@@ -17,9 +17,7 @@ import com.ruoyi.common.utils.poi.DocUtil;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.system.domain.*;
-import com.ruoyi.system.model.AssayData;
-import com.ruoyi.system.model.AssayTablePolicy;
-import com.ruoyi.system.model.AssayTotalData;
+import com.ruoyi.system.model.*;
 import com.ruoyi.system.service.*;
 import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -814,31 +812,37 @@ public class BizAssayController extends BaseController
 		AssayResult assayResult  = new AssayResult();
 		assayResult.setAssayNo(assayNo);
 		assayResult.setAssayItem(obj);
-		List<AssayResult> resultList = assayResultService.selectAssayResultList(assayResult);
+//		List<AssayResult> resultList = assayResultService.selectAssayResultList(assayResult);
+		List<Map<String, Object>> assayResultList = assayResultService.selectAssayResultListNew(assayResult);
 		AssayCurve curve_item = assayCurveService.selectAssayCurveByCurveNo(obj);
 
 
 		String docName = "";
-		int assayDetailRows = 0;
+//		int assayDetailRows = 0;
 
+		Configure config1 = null;
 		docName = "报表记录测试2.doc";
 		String assaymethod= "";
 		if("1".equals(obj)||"2".equals(obj)){
 			 docName = "COD分析项目原始记录.doc";
 			assaymethod = "HJ399-2007化学需氧量的测定 快速消解分光光度法";
-			assayDetailRows = 10;
+//			assayDetailRows = 10;
+			config1 = Configure.newBuilder().customPolicy("detail_table", new CodNewAssayTablePolicy(11, 9)).build();
 		}else if("5".equals(obj)){
 			docName = "总磷分析项目原始记录.doc";
 			assaymethod = "GB11893-1989水质总磷的测定钼酸铵分光光度法";
-			assayDetailRows = 12;
-		}else if(("4".equals(obj))){
+//			assayDetailRows = 12;
+			config1 = Configure.newBuilder().customPolicy("detail_table", new TPNewAssayTablePolicy(12, 9)).build();
+		}else if("4".equals(obj)){
 			docName = "总氮分析项目原始记录.doc";
 			assaymethod = "HJ636-2012水质总氮的测定碱性过硫酸钾消解紫外分光光度法";
-			assayDetailRows = 12;
-		}else if(("3".equals(obj))){
+//			assayDetailRows = 12;
+			config1 = Configure.newBuilder().customPolicy("detail_table", new TNBNewAssayTablePolicy(12, 9)).build();
+		}else if("3".equals(obj)){
 			docName = "氨氮分析项目原始记录.doc";
 			assaymethod = "HJ535-2009水质氨氮的测定纳氏试剂分光光度法";
-			assayDetailRows = 12;
+//			assayDetailRows = 12;
+			config1 = Configure.newBuilder().customPolicy("detail_table", new AmmoniaNewAssayTablePolicy(12, 9)).build();
 		}
 
 		AssayTotalData data = new AssayTotalData();
@@ -846,18 +850,30 @@ public class BizAssayController extends BaseController
 
 		List<RowRenderData> assayList = new ArrayList<RowRenderData>();
 		int i=0;
-		for(AssayResult result : resultList){
+		for(Map<String, Object> result : assayResultList){
 			i++;
 			String assayType="样品";
-			if(result.getAssayType()!=null){
+			/*if(result.getAssayType()!=null){
 				assayType=result.getAssayType();
+			}*/
+			if(result.get("assay_type")!=null){
+				assayType=(String) result.get("assay_type");
 			}
-			RowRenderData assayRow = RowRenderData.build(i+"", assayType, result.getSampleVolume()+"", result.getResultAbs()+"", result.getResultConcentration()+"", result.getResultConcentration()+"");
+
+			RowRenderData assayRow = RowRenderData.build(i+"", assayType, result.get("sample_volume")+"", result.get("result_abs")+"", result.get("result_concentration")+"", result.get("avg_result_concentration")+"");
+
+			if("1".equals(obj)||"2".equals(obj)){
+				assayRow = RowRenderData.build(i+"", assayType, result.get("sample_volume")+"", "","","","", result.get("result_concentration")+"", result.get("avg_result_concentration")+"");
+			}else if("5".equals(obj)){
+				assayRow = RowRenderData.build(i+"", assayType, result.get("sample_volume")+"", "", result.get("result_concentration")+"", result.get("avg_result_concentration")+"");
+			}else if("4".equals(obj)) {
+				assayRow = RowRenderData.build(i+"", assayType, result.get("sample_volume")+"","", result.get("result_abs")+"", result.get("result_concentration")+"", result.get("avg_result_concentration")+"");
+			}else if("3".equals(obj)) {
+				assayRow = RowRenderData.build(i+"", assayType, result.get("sample_volume")+"", result.get("result_abs")+"", result.get("result_concentration")+"", result.get("avg_result_concentration")+"");
+			}
+//			RowRenderData assayRow = RowRenderData.build(i+"", assayType, result.getSampleVolume()+"", result.getResultAbs()+"", result.getResultConcentration()+"", result.getResultConcentration()+"");
 			assayList.add(assayRow);
 		}
-
-
-		System.out.println("assayList.size():"+assayList.size());
 
 		assayData.setAssayResult(assayList);
 		data.setAssayTable(assayData);
@@ -884,8 +900,6 @@ public class BizAssayController extends BaseController
 		data.setA(curve_item.getCurveK1()+"");
 		data.setR(curve_item.getCurveR()+"");
 
-		System.out.println(data.getAssayTable().getAssayResult().size());
-
 		String path = ClassUtils.getDefaultClassLoader().getResource("").getPath();
 		String resource = "";
 		if ("1".equals(obj) || "2".equals(obj)) {
@@ -901,13 +915,9 @@ public class BizAssayController extends BaseController
 			resource = path+"static/docx/newdocx/总磷新报表测试报告模板.docx";
 		}
 
-		System.out.println("resource:"+resource);
-
 //		String resource = path+"static/docx/newdocx/氨氮新报表测试报告模板.docx";
-		Configure config1 = Configure.newBuilder().customPolicy("detail_table", new AssayTablePolicy(assayDetailRows)).build();
-//		Configure config1 = Configure.newBuilder().customPolicy("detail_table", new AssayTablePolicy(assayDetailRows)).build();
+		/*Configure config1 = Configure.newBuilder().customPolicy("detail_table", new AssayTablePolicy(assayDetailRows)).build();*/
 		XWPFTemplate template1 = XWPFTemplate.compile(resource, config1).render(data);
-
 
 		OutputStream out = null;
 		try {

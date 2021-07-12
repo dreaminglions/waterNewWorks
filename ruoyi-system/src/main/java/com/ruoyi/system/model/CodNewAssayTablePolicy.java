@@ -9,12 +9,18 @@ import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
 import java.util.List;
 
-public class AssayTablePolicy extends DynamicTableRenderPolicy {
+/**
+ * cod动态表渲染策略
+ */
+public class CodNewAssayTablePolicy extends DynamicTableRenderPolicy {
     // 化验结果数据所在行数
-    int assayRow = 6;
+    int assayRow = 11;
+    // 化验详细结果参照列数
+    int assayCols = 0;
 
-    public AssayTablePolicy(int assayRow) {
+    public CodNewAssayTablePolicy(int assayRow, int assayCols) {
         this.assayRow = assayRow;
+        this.assayCols =assayCols;
     }
 
     @Override
@@ -34,8 +40,9 @@ public class AssayTablePolicy extends DynamicTableRenderPolicy {
                 for (int j = 0; j < 10; j++) insertNewTableRow.createCell();
 
                 // 合并单元格
-                TableTools.mergeCellsHorizonal(table, assayRow, 3, 5);
-                TableTools.mergeCellsHorizonal(table, assayRow, 4, 6);
+                TableTools.mergeCellsHorizonal(table, assayRow, 1, 2);
+                /*TableTools.mergeCellsHorizonal(table, assayRow, 3, 5);
+                TableTools.mergeCellsHorizonal(table, assayRow, 4, 6);*/
 
                 // 渲染单行货品明细数据
                 MiniTableRenderPolicy.Helper.renderRow(table, assayRow, assayResult.get(i));
