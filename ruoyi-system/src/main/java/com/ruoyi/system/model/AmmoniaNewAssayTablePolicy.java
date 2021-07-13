@@ -37,11 +37,11 @@ public class AmmoniaNewAssayTablePolicy extends DynamicTableRenderPolicy {
             for (int i = size; i >=0; i--) {
 
                 XWPFTableRow insertNewTableRow = table.insertNewTableRow(assayRow);
-                for (int j = 0; j < 10; j++) insertNewTableRow.createCell();
+                for (int j = 0; j < 9; j++) insertNewTableRow.createCell();
 
                 // 合并单元格
                 TableTools.mergeCellsHorizonal(table, assayRow, 1, 3);
-                TableTools.mergeCellsHorizonal(table, assayRow, 4, 6);
+                TableTools.mergeCellsHorizonal(table, assayRow, 4, 5);
 
                 // 渲染单行货品明细数据
                 MiniTableRenderPolicy.Helper.renderRow(table, assayRow, assayResult.get(i));

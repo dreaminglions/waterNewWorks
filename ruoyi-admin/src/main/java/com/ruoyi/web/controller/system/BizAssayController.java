@@ -684,6 +684,9 @@ public class BizAssayController extends BaseController
 		List<AssayResult> resultList = assayResultService.selectAssayResultList(assayResult);
 		AssayCurve curve_item = assayCurveService.selectAssayCurveByCurveNo(obj);
 
+		BizWaterWork work = waterWorkService.selectBizWaterWorkById(assay.getDevice().getDeviceWorks());
+		String worksName = work.getWorksName();
+		String assayDate = assay.getAssayDate();
 
 		String docName = "";
 
@@ -723,6 +726,8 @@ public class BizAssayController extends BaseController
 		data.setAssayTable(assayData);
 		data.setOrderno(assay.getAssayNo());
 
+		data.setAssayWorkName(worksName);
+		data.setAssayDate(assayDate);
 		data.setAssaymethod(assaymethod);
 		data.setUg1(curve_item.getCurveCon1()+"");
 		data.setUg2(curve_item.getCurveCon2()+"");
@@ -824,6 +829,9 @@ public class BizAssayController extends BaseController
 		List<Map<String, Object>> assayResultList = assayResultService.selectAssayResultListNew(assayResult);
 		AssayCurve curve_item = assayCurveService.selectAssayCurveByCurveNo(obj);
 
+		BizWaterWork work = waterWorkService.selectBizWaterWorkById(assay.getDevice().getDeviceWorks());
+		String worksName = work.getWorksName();
+		String assayDate = assay.getAssayDate();
 
 		String docName = "";
 //		int assayDetailRows = 0;
@@ -887,6 +895,8 @@ public class BizAssayController extends BaseController
 		data.setAssayTable(assayData);
 		data.setOrderno(assay.getAssayNo());
 
+		data.setAssayWorkName(worksName);
+		data.setAssayDate(assayDate);
 		data.setAssaymethod(assaymethod);
 		data.setUg1(curve_item.getCurveCon1()+"");
 		data.setUg2(curve_item.getCurveCon2()+"");
@@ -1000,7 +1010,9 @@ public class BizAssayController extends BaseController
 		List<Map<String, Object>> assayResultList = assayResultService.selectAssayResultListNew(assayResult);
 		AssayCurve curve_item = assayCurveService.selectAssayCurveByCurveNo(obj);
 
-
+		BizWaterWork work = waterWorkService.selectBizWaterWorkById(assay.getDevice().getDeviceWorks());
+		String worksName = work.getWorksName();
+		String assayDate = assay.getAssayDate();
 		String docName = "";
 //		int assayDetailRows = 0;
 
@@ -1033,6 +1045,8 @@ public class BizAssayController extends BaseController
 		data.setAssayTable(assayData);
 		data.setOrderno(assay.getAssayNo());
 
+		data.setAssayWorkName(worksName);
+		data.setAssayDate(assayDate);
 		data.setAssaymethod(assaymethod);
 		data.setUg1(curve_item.getCurveCon1()+"");
 		data.setUg2(curve_item.getCurveCon2()+"");
