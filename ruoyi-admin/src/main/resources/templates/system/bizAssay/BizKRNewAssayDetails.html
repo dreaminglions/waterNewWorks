@@ -25,7 +25,7 @@
           </ul>
 
           <li>
-            <a id="Docx_button" class="btn btn-primary" onclick="Docx()" shiro:hasPermission="system:bizAssay:export" style="display:none">
+            <a id="Docx_button" class="btn btn-primary" onclick="Docx()" style="display:none">
               <i class="fa fa-download"></i> 导出分析项目原始记录
             </a>
 
@@ -285,7 +285,7 @@
                     var trHtml="";
                     var i=0;
                     var typNum = "";
-                    var assayItem = itemData[0].assay_item;
+                    var assayItem1 = itemData[0].assay_item;
 
                     $.each(itemData, function(key, value){
 
@@ -343,6 +343,9 @@
                     var tab="sample-table";
                     addTr(tab, row, trHtml);
 
+                    console.log(assayItem);
+                    console.log(assayItem!="");
+
                     if(assayItem!=""){
                         $("#Docx_button").css('display','');
                     }else{
@@ -375,7 +378,7 @@
 
         function Docx(){
             var obj = $("#assayItem").val();
-            window.location.href = prefix + "/getAllDoc/"+assayNo+"/"+obj;
+            window.location.href = prefix + "/getKRAllDoc/"+assayNo+"/"+obj;
         }
     </script>
 </body>

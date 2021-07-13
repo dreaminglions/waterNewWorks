@@ -801,7 +801,15 @@ public class BizAssayController extends BaseController
 		return prefix + "/getdoc";
 	}
 
-
+	/**
+	 * 导出新测试报告
+	 * @param assayNo
+	 * @param obj
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
 	@GetMapping("/getAllDoc/{assayNo}/{obj}")
 	@ResponseBody
 	public String  getAllDoc(@PathVariable("assayNo") String assayNo,@PathVariable("obj") String obj,HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -932,6 +940,141 @@ public class BizAssayController extends BaseController
 		InputStream fis = null;
 		OutputStream toClient = null;
 		File file = new File("out_template1.docx");
+		try {
+			fis = new BufferedInputStream(new FileInputStream(file));
+			byte[] buffer = new byte[fis.available()];
+			fis.read(buffer);
+			fis.close();
+			// 清空response
+			response.reset();
+			// 设置response的Header
+			String newWordName = URLEncoder.encode(docName, "utf-8"); //这里要用URLEncoder转下才能正确显示中文名称
+			response.addHeader("Content-Disposition", "attachment;filename=" + newWordName+"");
+			response.addHeader("Content-Length", "" + file.length());
+			toClient = new BufferedOutputStream(response.getOutputStream());
+			response.setContentType("application/octet-stream");
+			toClient.write(buffer);
+			toClient.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				if(fis!=null){
+					fis.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(toClient!=null){
+					toClient.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return prefix + "/getdoc";
+	}
+
+	/**
+	 * 导出科瑞测试报告
+	 * @param assayNo
+	 * @param obj
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
+	@GetMapping("/getKRAllDoc/{assayNo}/{obj}")
+	@ResponseBody
+	public String  getKRAllDoc(@PathVariable("assayNo") String assayNo,@PathVariable("obj") String obj,HttpServletRequest request, HttpServletResponse response) throws IOException {
+//		List<Map<String,Object>> mapList =  new ArrayList<>();
+
+		BizAssay assay = bizAssayService.selectBizAssayByAssayNo(assayNo);
+
+		AssayResult assayResult  = new AssayResult();
+		assayResult.setAssayNo(assayNo);
+		assayResult.setAssayItem(obj);
+//		List<AssayResult> resultList = assayResultService.selectAssayResultList(assayResult);
+		List<Map<String, Object>> assayResultList = assayResultService.selectAssayResultListNew(assayResult);
+		AssayCurve curve_item = assayCurveService.selectAssayCurveByCurveNo(obj);
+
+
+		String docName = "";
+//		int assayDetailRows = 0;
+
+		Configure config1 = Configure.newBuilder().customPolicy("detail_table", new KeRuiNewAssayTablePolicy(16, 7)).build();;
+		docName = "科瑞报表记录测试2.doc";
+		String assaymethod= "";
+		assaymethod = "HJ399-2007化学需氧量的测定 快速消解分光光度法";
+
+		AssayTotalData data = new AssayTotalData();
+		AssayData assayData = new AssayData();
+
+		List<RowRenderData> assayList = new ArrayList<RowRenderData>();
+		int i=0;
+		for(Map<String, Object> result : assayResultList){
+			i++;
+			String assayType="样品";
+			/*if(result.getAssayType()!=null){
+				assayType=result.getAssayType();
+			}*/
+			if(result.get("assay_type")!=null){
+				assayType=(String) result.get("assay_type");
+			}
+
+			RowRenderData assayRow = RowRenderData.build(i+"", assayType, result.get("sample_volume")+"", "", result.get("result_concentration")+"", "", result.get("avg_result_concentration")+"");
+
+			assayList.add(assayRow);
+		}
+
+		assayData.setAssayResult(assayList);
+		data.setAssayTable(assayData);
+		data.setOrderno(assay.getAssayNo());
+
+		data.setAssaymethod(assaymethod);
+		data.setUg1(curve_item.getCurveCon1()+"");
+		data.setUg2(curve_item.getCurveCon2()+"");
+		data.setUg3(curve_item.getCurveCon3()+"");
+		data.setUg4(curve_item.getCurveCon4()+"");
+		data.setUg5(curve_item.getCurveCon5()+"");
+		data.setUg6(curve_item.getCurveCon6()+"");
+		data.setUg7(curve_item.getCurveCon7()+"");
+
+		data.setOD1(curve_item.getCurveAbs1()+"");
+		data.setOD2(curve_item.getCurveAbs2()+"");
+		data.setOD3(curve_item.getCurveAbs3()+"");
+		data.setOD4(curve_item.getCurveAbs4()+"");
+		data.setOD5(curve_item.getCurveAbs5()+"");
+		data.setOD6(curve_item.getCurveAbs6()+"");
+		data.setOD7(curve_item.getCurveAbs7()+"");
+
+		data.setB(curve_item.getCurveK0()+"");
+		data.setA(curve_item.getCurveK1()+"");
+		data.setR(curve_item.getCurveR()+"");
+
+		String path = ClassUtils.getDefaultClassLoader().getResource("").getPath();
+		String resource = "";
+		resource = path+"static/docx/newdocx/科瑞测试报告模板.docx";
+
+//		String resource = path+"static/docx/newdocx/氨氮新报表测试报告模板.docx";
+		/*Configure config1 = Configure.newBuilder().customPolicy("detail_table", new AssayTablePolicy(assayDetailRows)).build();*/
+		XWPFTemplate template1 = XWPFTemplate.compile(resource, config1).render(data);
+
+		OutputStream out = null;
+		try {
+			out = new FileOutputStream("out_template2.docx");
+			template1.write(out);
+			out.flush();
+			out.close();
+			template1.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		InputStream fis = null;
+		OutputStream toClient = null;
+		File file = new File("out_template2.docx");
 		try {
 			fis = new BufferedInputStream(new FileInputStream(file));
 			byte[] buffer = new byte[fis.available()];

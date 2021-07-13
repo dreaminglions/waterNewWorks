@@ -267,9 +267,9 @@
                     var trHtml="";
                     var i=0;
                     var typNum = "";
-                    var assayItem = itemData[0].assay_item;
+                    var assayItem1 = itemData[0].assay_item;
 
-                    if (assayItem === "1" || assayItem === "2") {
+                    if (assayItem1 === "1" || assayItem1 === "2") {
 
                                 $("#cod-part").css('display','table');
                                 $("#item-table").css('display','none');
@@ -292,7 +292,7 @@
                                 $("#computeFormula").html("<tr><td rowspan=\"2\">计算公式：</td></tr><tr><td>□ C0=10.00×0.250/V硫酸亚铁铵           □ C0=10.00×0.025/V硫酸亚铁铵 </td><td>C=[C0×(V耗空白-V耗样品)×8000]/V×f</td></tr>");
                         }
 
-                    if (assayItem === "3") {
+                    if (assayItem1 === "3") {
                                 $("#cod-part").css('display','none');
                                 $("#item-table").css('display','table');
                                 $("#curve-table").css('display','table');
@@ -309,7 +309,7 @@
 
                               $("#computeFormula").html("<tr><td>计算公式：ρ=(As-Ab-a)/(b×V)</td></tr>");
                         }
-                        if (assayItem === "4") {
+                        if (assayItem1 === "4") {
                         $("#cod-part").css('display','none');
                                 $("#item-table").css('display','table');
                                 $("#curve-table").css('display','table');
@@ -328,7 +328,7 @@
 
 
                         }
-                        if (assayItem === "5") {
+                        if (assayItem1 === "5") {
                         $("#cod-part").css('display','none');
                                 $("#item-table").css('display','table');
                                 $("#curve-table").css('display','table');
@@ -349,7 +349,7 @@
 
                         i++;
 
-                        if(assayItem === "1" || assayItem === "2") {
+                        if(assayItem1 === "1" || assayItem1 === "2") {
 
                             trHtml += "<tr  class=\"cod\"><td>"+i+"</td>\n";
                             if(value.type_num == typNum && value.type_num!='1'){
@@ -371,7 +371,7 @@
                             }
 
                         }
-                        if(assayItem === "3") {
+                        if(assayItem1 === "3") {
                           trHtml += "<tr  class=\"cod\"><td>"+i+"</td>\n";
                           if(value.type_num == typNum && value.type_num!='1'){
                             trHtml += "" ;
@@ -388,7 +388,7 @@
                             trHtml += "<td rowspan=\""+value.type_num+"\">"+value.avg_result_concentration+"</td></tr>\n";
                           }
                         }
-                        if(assayItem === "4") {
+                        if(assayItem1 === "4") {
                               trHtml += "<tr  class=\"cod\"><td>"+i+"</td>\n";
                               if(value.type_num == typNum && value.type_num!='1'){
                                 trHtml += "" ;
@@ -406,7 +406,7 @@
                                 trHtml += "<td rowspan=\""+value.type_num+"\">"+value.avg_result_concentration+"</td></tr>\n";
                               }
                         }
-                        if(assayItem === "5") {
+                        if(assayItem1 === "5") {
                             trHtml += "<tr  class=\"cod\"><td>"+i+"</td>\n";
                             if(value.type_num == typNum && value.type_num!='1'){
                               trHtml += "" ;
